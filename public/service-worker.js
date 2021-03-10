@@ -2,20 +2,9 @@ const FILES_TO_CACHE = [
     "/",
     "/index.html",
     "/style.css",
-    // "/assets/js/loadPosts.js",
-    // "/assets/images/Angular-icon.png",
-    // "/assets/images/React-icon.png",
-    // "/assets/images/Vue.js-icon.png",
     "/manifest.webmanifest",
     "/service-worker.js",
-    // "/favicon.ico",
-    // "/icons/icon-72x72.png",
-    // "/icons/icon-96x96.png",
-    // "/icons/icon-128x128.png",
-    // "/icons/icon-144x144.png",
     "/icons/icon-169x169.png",
-    // "/icons/icon-192x192.png",
-    // "/icons/icon-384x384.png",
     "/icons/icon-512x512.png",
   ];
   
@@ -24,6 +13,12 @@ const FILES_TO_CACHE = [
   
   // install
   self.addEventListener("install", function(evt) {
+        // pre cache image data, image is a data cache, it's dynamic
+    evt.waitUntil(
+        caches.open(DATA_CACHE_NAME).then((cache) => cache.add("/api/"))
+        );
+
+        // pre cache all static assets, like the html, image, css are static files
     evt.waitUntil(
       caches.open(CACHE_NAME).then(cache => {
         console.log("Your files were pre-cached successfully!");
