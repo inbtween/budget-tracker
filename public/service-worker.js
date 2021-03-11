@@ -8,7 +8,7 @@ var FILES_TO_CACHE = [
     "./icons/icon-512x512.png"
   ];
   
-  var CACHE_NAME = "static-cache-v1";
+  var CACHE_NAME = "static-cache-v2";
   const DATA_CACHE_NAME = "data-cache-v1";
   
   // install
@@ -18,6 +18,7 @@ var FILES_TO_CACHE = [
         // pre cache all static assets, like the html, image, css are static files
     evt.waitUntil(
       caches.open(CACHE_NAME).then( function(cache) {
+        console.log(transactions)
         console.log("Your files were pre-cached successfully!");
         return cache.addAll(FILES_TO_CACHE);
       }).then(function() {
