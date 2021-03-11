@@ -1,33 +1,29 @@
-const FILES_TO_CACHE = [
-    "/",
-    "/index.html",
-    "/style.css",
-    "/db.js",
-    "/manifest.webmanifest",
-    "/service-worker.js",
-    "/icons/icon-169x169.png",
-    "/icons/icon-512x512.png",
+var FILES_TO_CACHE = [
+    "./",
+    "./style.css",
+    "./db.js",
+    "./index.js",
+    "./manifest.webmanifest",
+    "./icons/icon-169x169.png",
+    "./icons/icon-512x512.png"
   ];
   
-  const CACHE_NAME = "static-cache-v2";
+  var CACHE_NAME = "static-cache-v1";
   const DATA_CACHE_NAME = "data-cache-v1";
   
   // install
   self.addEventListener("install", function(evt) {
         // pre cache image data, image is a data cache, it's dynamic
-    evt.waitUntil(
-        caches.open(DATA_CACHE_NAME).then((cache) => cache.add("/api/"))
-        );
 
         // pre cache all static assets, like the html, image, css are static files
     evt.waitUntil(
-      caches.open(CACHE_NAME).then(cache => {
+      caches.open(CACHE_NAME).then( function(cache) {
         console.log("Your files were pre-cached successfully!");
         return cache.addAll(FILES_TO_CACHE);
-      })
+      }).then(function() {
+          self.skipWaiting()
+      }).catch(err => console.log(err))
     );
-  
-    self.skipWaiting();
   });
   
   self.addEventListener("activate", function(evt) {
@@ -52,9 +48,9 @@ const FILES_TO_CACHE = [
     // cache successful requests to the API
     if (evt.request.url.includes("/api/")) {
       evt.respondWith(
-        caches.open(DATA_CACHE_NAME).then(cache => {
+        caches.open(DATA_CACHE_NAME).then( function(cache) {
           return fetch(evt.request)
-            .then(response => {
+            .then(function(response) {
               // If the response was good, clone it and store it in the cache.
               if (response.status === 200) {
                 cache.put(evt.request.url, response.clone());
@@ -62,11 +58,13 @@ const FILES_TO_CACHE = [
   
               return response;
             })
-            .catch(err => {
+            .catch(function(err) {
               // Network request failed, try to get it from the cache.
               return cache.match(evt.request);
             });
-        }).catch(err => console.log(err))
+        }).catch(function(err) {
+            console.log(err)
+        })
       );
   
       return;
@@ -75,8 +73,14 @@ const FILES_TO_CACHE = [
     // if the request is not for the API, serve static assets using "offline-first" approach.
     // see https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#cache-falling-back-to-network
     evt.respondWith(
-      caches.match(evt.request).then(function(response) {
-        return response || fetch(evt.request);
+      fetch(evt.request).catch(function() {
+          return caches.match(evt.request).then(function(response) {
+            if (response) {
+                return response
+            } else if (evt.request.headers.get("accept").includes("text/html")) {
+                return caches.match("/")
+            }
+          })
       })
     );
   });
