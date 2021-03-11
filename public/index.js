@@ -19,6 +19,7 @@ fetch("/api/transaction")
 function populateTotal() {
   // reduce transaction amounts to a single total value
   let total = transactions.reduce(function(total, t) {
+    // console.log(reduce())
     return total + parseInt(t.value);
   }, 0);
 
