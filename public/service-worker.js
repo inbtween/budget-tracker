@@ -1,7 +1,7 @@
 
   const FILES_TO_CACHE = [
     '/',
-    '/style.css',
+    '/styles.css',
     "/db.js",
     "/index.js",
     "/manifest.webmanifest",
@@ -55,7 +55,7 @@
     }
   
     // handle runtime GET requests for data from /api routes
-    if (event.request.url.includes("/api/")) {
+    if (event.request.url.includes("/api/images")) {
       // make network request and fallback to cache if network request fails (offline)
       event.respondWith(
         caches.open(RUNTIME_CACHE).then(cache => {
