@@ -1,4 +1,3 @@
-
 const FILES_TO_CACHE = [
   "/",
   "/index.html",
@@ -10,8 +9,8 @@ const FILES_TO_CACHE = [
   "/icons/icon-512x512.png"
 ];
 
-let STATIC_CACHE = "static-cache-v1";
-let RUNTIME_CACHE = "runtime-cache";
+const STATIC_CACHE = "static-cache-v1";
+const RUNTIME_CACHE = "runtime-cache";
 
 // self.addEventListener("install", event => {
 //   event.waitUntil(
@@ -25,7 +24,7 @@ let RUNTIME_CACHE = "runtime-cache";
 
 self.addEventListener("install", (evt) => {
   evt.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => {
+    caches.open(STATIC_NAME).then((cache) => {
       return cache.addAll(FILES_TO_CACHE);
     })
   );
