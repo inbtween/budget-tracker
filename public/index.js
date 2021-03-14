@@ -6,9 +6,11 @@ fetch("/api/transaction")
     return response.json();
   })
   .then(data => {
+    console.log(data)
     // save db data on global variable
-    // transactions = data;
-    transactions= data.map(obj=>obj.value)
+    transactions = data;
+    // transactions= data.map(obj=>obj.value)
+    console.log(transactions)
 
     populateTotal();
     populateTable();
